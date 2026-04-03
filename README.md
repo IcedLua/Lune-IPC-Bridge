@@ -1,8 +1,76 @@
-C++ (Running Luau Bytecode) -> Requesting Rust (lune runtime) -> Lune Standard Library -> "blocking" rust crate -> STDIO -> C -> Python (running inside C) -> Send a small text packet status back over the bridge -> In 0.04761904761 seconds... sending 4mb raw buffers, with a 5 byte header
-Last time i testsed... yknow what i got? 100 miliseconds. To send a 4mb image. I assume it's warmed up, because the previous test I did was one-shot, but, now we're raymarching a continous animation, at 21 FRAMES
+`
+C++ (Running Luau Bytecode) -> Requesting Rust (lune runtime) -> Lune Standard Library -> "blocking" rust crate -> STDIO -> C -> Python (running inside C) -> Send a small text packet status back over the bridge -> In a sixty-th of a second... sending 4mb raw buffers, with a 5 byte header
+`
 
-Amazing; amazing for stdio of course, it's not the fastest, 40 miliseconds for 4mb? But, 25 fps. A 25 fps raymarching animation.
-In... lighter cases like sending small tables, it's best case is a bit worse than your standard ipc, and definitely not as good as shared memory.
+Last time i tested... yknow what i got? 100 miliseconds. To send a 4mb image. I assume it's warmed up, because the previous test I did was one-shot, but, now we're raymarching a continous animation, at 60+ frames!!!
+
+<details>
+  <summary>Code used</summary>
+
+  ```luau
+local task = require("@lune/task")
+local Bridge = require("./lunetools/Bridge")
+local PythonExecutable = `Python`
+local RunLocation = "secondary/main.py"
+
+local myBridge = Bridge.new({
+    executable = PythonExecutable,
+    params = {RunLocation, "-u"}
+})
+
+
+local width, height = 1024, 1024
+local imgBuffer = buffer.create(width * height * 4)
+
+local BG_R, BG_G, BG_B = 0, 0, 0
+local W_INV, H_INV = 1/width, 1/height
+
+local lastTime = os.clock()
+
+while true do
+    local t = os.clock()
+    
+    local lx, lz = math.sin(t) * 0.57, math.cos(t) * 0.57
+    local radius = 0.6 + math.sin(t * 1.5) * 0.1
+    local radiusSq = radius * radius
+
+    for y = 0, height - 1 do
+        local uvY = (y * H_INV) * 2 - 1
+        for x = 0, width - 1 do
+            local uvX = (x * W_INV) * 2 - 1
+            local distSq = uvX*uvX + uvY*uvY
+            
+            local r, g, b = BG_R, BG_G, BG_B
+            
+            if distSq < radiusSq then
+                local uvZ = math.sqrt(radiusSq - distSq)
+                local dot = (uvX * lx + uvY * 0.57 + uvZ * lz)
+                local intensity = (dot > 0.1) and dot or 0.1
+                
+                r = intensity * 190
+                g = intensity * 190
+                b = intensity * 255
+            end
+
+            local offset = (y * width + x) * 4
+            buffer.writeu8(imgBuffer, offset, r)
+            buffer.writeu8(imgBuffer, offset + 1, g)
+            buffer.writeu8(imgBuffer, offset + 2, b)
+            buffer.writeu8(imgBuffer, offset + 3, 255)
+        end
+    end
+
+    myBridge:send(imgBuffer)
+    local currentTime = os.clock()
+    local deltaTime = currentTime - lastTime
+    local fps = 1 / deltaTime -- Since FPS = Frames / Seconds
+    
+    print("FPS: " .. math.floor(fps)) -- Not the best way to calculate, but, great estimation.
+    
+    lastTime = currentTime
+end
+```
+</details>
 
 (ai generated readme below)
 (slightly edited by human)
