@@ -5,38 +5,39 @@ A fast, lightweight inter-process communication bridge that enables **Luau** (vi
 
 ## ✨ Features
 
-- **Ultra-Low Latency** - ~80 microseconds per round-trip ping-pong
-- **Binary-Safe** - Supports both MessagePack-encoded data and raw buffers
-- **Efficient Serialization** - Uses MessagePack for compact data encoding
-- **Simple API** - Minimal, intuitive interface for inter-process communication
-- **Large Data Support** - Handles multi-megabyte transfers (tested with 4MB image buffers)
+- **i optimized tf out of it** - ~80 microseconds round trip to send... a 4 byte number!! wow!!!
+- **meows data in morse code** - ok that's not a feature is it?
+- **better than json** - it uses messaagepack!!!
+- **Simple API** - WOw so easy to use definitely not me just being lazy and only adding three methods
+- **Large Data Support** - It sends... not that much data really.
 
 ## 📋 Prerequisites
 
 - **MessagePack** - Required for serialization on both sides
   - Python: `pip install msgpack`
-  - Luau: Included via Lune's standard library
+  - Other Languages: dude go figure it out yourself i only speak luau
+  - Luau: it's in the repo, or you can find it at... idk where lol
 
-## 🚀 Quick Start
+## 🚀 Slow Start
 
 ### Copy the Bridge Files
 
 1. Copy `src/bridge.luau` to your Lune project
-2. Copy `src/bridge.py` to your Python project (or implement the bridge pattern in C++)
+2. Copy `src/bridge.py` to your Python project (or implement the bridge pattern in your preferred language)
 
 ### Basic Usage
 
 **Luau (Lune):**
 ```luau
-local Bridge = require("./bridge")
+local Bridge = require("./bridge") -- or your path
 
 local myBridge = Bridge.new({
-    executable = "python",
-    params = {"my_script.py"}
+    executable = "python", -- yeah that does work with PATH, or wahtever bash uses (w bash)
+    params = {"my_script.py"} -- relative to cwd of course
 })
 
 -- Send data
-myBridge:send({ message = "Hello from Luau!" })
+myBridge:send({ message = "Hello from Luau!" }) -- Supports most data types, no Luau specific, only Lua pure. also supports buffers if you needasend like vectors or stuff serialize it urself into a buffer
 
 -- Receive data
 local response = myBridge:read()
@@ -45,7 +46,7 @@ print(response)
 
 **Python:**
 ```python
-from bridge import Bridge
+from bridge import Bridge -- provided in project, or like, you can code your own.
 
 def handle_message(data, is_raw):
     print(f"Received: {data}")
@@ -59,8 +60,8 @@ bridge.listen()
 
 See `src/examples/` for working examples:
 
-- **Ping-Pong Test** - Demonstrates low-latency messaging (~80µs per round-trip)
-- **Image Transfer** - Shows efficient binary buffer transmission (4MB+ capable)
+- **Ping-Pong Test** - Demonstrates low-latency messaging (~80µs per round-trip)... to calculate n+1
+- **Image Transfer** - Shows efficient binary buffer transmission (it can send at least 4mb) (100 milisecond round trip) (ts so slow wtf)
 
 ## 📊 Performance
 
@@ -68,8 +69,8 @@ See `src/examples/` for working examples:
 - Binary data transfer: **100+ milliseconds** for 4MB buffers
 - Minimal overhead through direct stdin/stdout communication
 
-## 🔧 How It Works
-
+## 🔧 NOT How It Works
+(aiu doesnt understand that much but this is right right)
 The bridge uses a simple 5-byte header protocol:
 
 ```
