@@ -1,4 +1,11 @@
-(ai generated readme)
+C++ (Running Luau Bytecode) -> Requesting Rust (lune runtime) -> Lune Standard Library -> "blocking" rust crate -> STDIO -> C -> Python (running inside C) -> Send a small text packet status back over the bridge -> In 0.04761904761 seconds... sending 4mb raw buffers, with a 5 byte header
+Last time i testsed... yknow what i got? 100 miliseconds. To send a 4mb image. I assume it's warmed up, because the previous test I did was one-shot, but, now we're raymarching a continous animation, at 21 FRAMES
+
+Amazing; amazing for stdio of course, it's not the fastest, 40 miliseconds for 4mb? But, 25 fps. A 25 fps raymarching animation.
+In... lighter cases like sending small tables, it's best case is a bit worse than your standard ipc, and definitely not as good as shared memory.
+
+(ai generated readme below)
+(slightly edited by human)
 # 🌉 Lune IPC Bridge
 
 A fast, lightweight inter-process communication bridge that enables **Luau** (via [Lune](https://lune.luau.org/)) to communicate with **Python** (or any language) using MessagePack serialization.
