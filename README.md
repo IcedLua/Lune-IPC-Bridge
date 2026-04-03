@@ -4,6 +4,7 @@ C++ (Running Luau Bytecode) -> Requesting Rust (lune runtime) -> Lune Standard L
 
 Last time i tested... yknow what i got? 100 miliseconds. To send a 4mb image. I assume it's warmed up, because the previous test I did was one-shot, but, now we're raymarching a continous animation, at 60+ frames!!!
 
+`FPS: Current: 68 Average: 51 Best: 72 Worst: 0`
 <details>
   <summary>Code used</summary>
 
